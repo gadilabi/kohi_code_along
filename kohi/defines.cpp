@@ -1,0 +1,1 @@
+#define KAPI __declspec(dllexport)

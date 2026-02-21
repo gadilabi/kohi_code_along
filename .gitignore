@@ -1,0 +1,25 @@
+# --- Visual Studio Junk ---
+.vs/
+*.suo
+*.user
+*.sln.docstates
+*.db
+*.opendb
+
+# --- Build Output ---
+[Bb]in/
+[Oo]bj/
+[Xx]64/
+[Aa][Rr][Mm]64/
+*.exe
+*.dll
+*.lib
+*.pdb
+*.ilk
+*.exp
+
+# --- Temporary/Misc ---
+*.log
+*.tmp
+*.bak
+*.cache

@@ -1,0 +1,9 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="kohi_core/kohi_core.vcxproj" Id="f199d4f5-159a-4755-b654-706c3953968b" />
+  <Project Path="kohi_platform/kohi_platform.vcxproj" Id="0407625e-b52b-4065-838f-822021dd7ad4" />
+  <Project Path="kohi_testbed/kohi_testbed.vcxproj" Id="fc96624e-ff99-4ee6-b4c1-8fa0ac1a063f" />
+</Solution>
