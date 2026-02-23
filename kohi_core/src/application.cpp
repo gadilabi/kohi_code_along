@@ -1,9 +1,10 @@
-#include "application.h"
 #include "game_types.h"
 #include "logger.h"
 #include "platform.h"
 #include "kmemory.h"
+#include "event.h"
 
+#include "application.h"
 
 typedef struct application_state
 {
@@ -30,9 +31,6 @@ KAPI b8 application_create(game_t* game_instance)
 
 	app_state.game_instance = game_instance;
 
-	// initialize subsystems
-	initialize_logging();
-
 	// TODO: remove this when the logging system is complete
 	KFATAL("A test message: %d", 1);
 	KERROR("A test message: %d", 1);
@@ -40,6 +38,16 @@ KAPI b8 application_create(game_t* game_instance)
 	KINFO("A test message: %d", 1);
 	KDEBUG("A test message: %d", 1);
 	KTRACE("A test message: %d", 1);
+
+
+	// initialize subsystems
+	initialize_logging();
+	if (!event_initialize())
+	{
+		KFATAL("event system initialization failed. process terminated");
+
+		return false;
+	}
 
 	app_state.is_running = true;
 	app_state.is_suspended = false;
@@ -100,6 +108,8 @@ KAPI b8 application_run()
 	}
 
 	app_state.is_running = false;
+
+	event_shutdown();
 
 	platform_shutdown(app_state.platform_state);
 

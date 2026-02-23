@@ -146,3 +146,8 @@ KAPI void darray_get(darray_t* darr, u64 idx, void* out)
 	void* src = (char*)darr->container + idx * darr->elem_size;
 	memory_copy(out, src, darr->elem_size);
 }
+
+KAPI u64 darray_size(darray_t* darr)
+{
+	return darr->size;
+}
