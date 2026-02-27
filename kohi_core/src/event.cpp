@@ -55,14 +55,14 @@ KAPI b8 event_register(u16 code, void* listener, event_handler_t cb)
 	KASSERT(is_initialized, "event system must be initialized before events can be registerd");
 	KASSERT(code < EVENT_MAX_CODE, "code must be under EVENT_MAX_CODE");
 
-	darray_t* events = state.registered[code].registered_events;
-
-	if (events != NULL)
+	if (state.registered[code].registered_events == NULL)
 	{
 		state.registered[code].registered_events = darray_create(REGISTER_EVENTS_CAPACITY, sizeof(registered_event_t));
 	}
 
-	u64 size = darray_size(events);
+	darray_t* events = state.registered[code].registered_events;
+
+	u64 size = (events) ? darray_size(events) : 0;
 	for (u64 i = 0; i < size; ++i)
 	{
 		registered_event_t event;
@@ -75,7 +75,7 @@ KAPI b8 event_register(u16 code, void* listener, event_handler_t cb)
 	}
 
 	registered_event_t event = { .listener = listener, .handler = cb };
-	if (!darray_push(state.registered[code].registered_events, &event))
+	if (!darray_push(events, &event))
 	{
 		return false;
 	}
@@ -114,7 +114,7 @@ KAPI b8 event_unregister(u16 code, void* listener, event_handler_t cb)
 KAPI b8 event_fire(u16 code, void* sender, event_context_t ctx)
 {
 	darray_t* events = state.registered[code].registered_events;
-	u64 size = darray_size(events);
+	u64 size = (events != NULL) ? darray_size(events) : 0;
 
 	for (u64 i = 0; i < size; ++i)
 	{

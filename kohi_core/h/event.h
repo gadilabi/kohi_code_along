@@ -66,7 +66,7 @@ typedef enum event_system_code
 	EVENT_CODE_MOUSE_MOVED = 0x06,
 
 	// z_delta = u8[0]
-	EVEN_CODE_MOUSE_WHEEL = 0x07,
+	EVENT_CODE_MOUSE_WHEEL = 0x07,
 
 	// width = u16[0]
 	// height = u16[1]

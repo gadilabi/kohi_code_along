@@ -24,9 +24,15 @@ typedef struct dynamic_array
 // API definitions
 KAPI darray_t* darray_create(u64 initial_capacity, u64 elem_size)
 {
-	darray_t* darray = (darray_t*)KALLOCATE(initial_capacity * sizeof(darray_t));
+	darray_t* darray = (darray_t*)KALLOCATE(sizeof(darray_t));
 
 	if (!darray)
+	{
+		return NULL;
+	}
+
+	darray->container = KALLOCATE(initial_capacity * elem_size);
+	if (darray->container == NULL)
 	{
 		return NULL;
 	}
@@ -51,7 +57,8 @@ KAPI b8 darray_push(darray_t* darr, void* data)
 		}
 	}
 
-	memory_copy(darr + darr->size, data, darr->elem_size);
+	void* dst = (char*)darr->container + darr->size * darr->elem_size;
+	memory_copy(dst, data, darr->elem_size);
 
 	++(darr->size);
 

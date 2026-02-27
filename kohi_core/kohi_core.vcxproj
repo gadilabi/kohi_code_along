@@ -26,6 +26,7 @@
     <ClInclude Include="h\entry.h" />
     <ClInclude Include="h\event.h" />
     <ClInclude Include="h\game_types.h" />
+    <ClInclude Include="h\input.h" />
     <ClInclude Include="h\logger.h" />
     <ClInclude Include="h\kmemory.h" />
   </ItemGroup>
@@ -33,6 +34,7 @@
     <ClCompile Include="src\application.cpp" />
     <ClCompile Include="src\darray.cpp" />
     <ClCompile Include="src\event.cpp" />
+    <ClCompile Include="src\input.cpp" />
     <ClCompile Include="src\logger.cpp" />
     <ClCompile Include="src\kmemory.cpp" />
   </ItemGroup>

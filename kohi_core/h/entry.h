@@ -42,7 +42,7 @@ int main(void)
 		return -1;
 	}
 
-	if (application_run())
+	if (!application_run())
 	{
 		KFATAL("application did not manage to run");
 

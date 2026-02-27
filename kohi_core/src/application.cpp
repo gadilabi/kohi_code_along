@@ -3,6 +3,7 @@
 #include "platform.h"
 #include "kmemory.h"
 #include "event.h"
+#include "input.h"
 
 #include "application.h"
 
@@ -20,6 +21,12 @@ typedef struct application_state
 static b8 initialized = false;
 static application_state_t app_state;
 
+b8 handle_events(u16 code, void* sender, void* listener, event_context_t ctx);
+b8 handle_quit();
+b8 handle_key_release(void* sender, void* listener, event_context_t ctx);
+b8 handle_key_press(void* sender, void* listener, event_context_t ctx);
+
+
 KAPI b8 application_create(game_t* game_instance)
 {
 	if (initialized)
@@ -30,6 +37,7 @@ KAPI b8 application_create(game_t* game_instance)
 	}
 
 	app_state.game_instance = game_instance;
+
 
 	// TODO: remove this when the logging system is complete
 	KFATAL("A test message: %d", 1);
@@ -42,12 +50,18 @@ KAPI b8 application_create(game_t* game_instance)
 
 	// initialize subsystems
 	initialize_logging();
+	input_initialize();
+
 	if (!event_initialize())
 	{
 		KFATAL("event system initialization failed. process terminated");
 
 		return false;
 	}
+
+	event_register(EVENT_CODE_KEY_PRESSED, NULL, handle_events);
+	event_register(EVENT_CODE_KEY_RELEASED, NULL, handle_events);
+	event_register(EVENT_CODE_APPLICATION_QUIT, NULL, handle_events);
 
 	app_state.is_running = true;
 	app_state.is_suspended = false;
@@ -103,6 +117,8 @@ KAPI b8 application_run()
 				KFATAL("Game update failed");
 				app_state.is_running = false;
 			}
+
+			input_update(0);
 		}
 
 	}
@@ -110,8 +126,72 @@ KAPI b8 application_run()
 	app_state.is_running = false;
 
 	event_shutdown();
+	input_shutdown();
 
 	platform_shutdown(app_state.platform_state);
 
 	return true;
+}
+
+// event handlers
+b8 handle_events(u16 code, void* sender, void* listener, event_context_t ctx)
+{
+	switch (code)
+	{
+	case EVENT_CODE_APPLICATION_QUIT:
+		return handle_quit();
+	case EVENT_CODE_KEY_PRESSED:
+		return handle_key_press(sender, listener, ctx);
+	case EVENT_CODE_KEY_RELEASED:
+		return handle_key_release(sender, listener, ctx);
+	}
+
+	return false;
+}
+
+b8 handle_quit()
+{
+	app_state.is_running = false;
+
+	return true;
+}
+
+b8 handle_key_release(void* sender, void* listener, event_context_t ctx)
+{
+	key_t key = (key_t)ctx.data.u16[0];
+
+	switch (key)
+	{
+	case KEY_A:
+		KDEBUG("key A released");
+		return true;
+	case KEY_B:
+		KDEBUG("key B released");
+		return true;
+	}
+
+	return false;
+}
+
+
+
+b8 handle_key_press(void* sender, void* listener, event_context_t ctx)
+{
+	key_t key = (key_t)ctx.data.u16[0];
+
+	switch (key)
+	{
+	case KEY_ESCAPE:
+		event_fire(EVENT_CODE_APPLICATION_QUIT, sender, ctx);
+		return true;
+	case KEY_A:
+		KDEBUG("key A pressed");
+		return true;
+	case KEY_B:
+		KDEBUG("key B pressed");
+		return true;
+
+	}
+
+	return false;
 }
